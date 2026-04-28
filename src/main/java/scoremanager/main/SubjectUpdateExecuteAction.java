@@ -1,8 +1,8 @@
 package scoremanager.main;
 
-import bean.Student;
+import bean.Subject;
 import bean.Teacher;
-import dao.StudentDao;
+import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -10,40 +10,29 @@ import tool.Action;
 
 public class SubjectUpdateExecuteAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        // セッションからユーザー（教員）情報を取得
+        HttpSession session = req.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-		HttpSession session = req.getSession();
-		Teacher teacher = (Teacher) session.getAttribute("user");
+        // 1. パラメータ（科目コードと科目名）を取得
+        // JSPの"cd"と"name"から送られてくる値
+        String subjectCd = req.getParameter("cd");
+        String subjectName = req.getParameter("name");
 
-		// パラメータ取得
-		String entYearStr = req.getParameter("ent_year");
-		String studentNo = req.getParameter("no");
-		String studentName = req.getParameter("name");
-		String classNum = req.getParameter("class_num");
-		String isAttendStr = req.getParameter("is_attend"); // チェックボックス
+        // 2. 科目Beanの作成と値のセット
+        Subject subject = new Subject();
+        subject.setCd(subjectCd);
+        subject.setName(subjectName);
+        // ログイン中の教員の学校をセット
+        subject.setSchool(teacher.getSchool());
 
-		// 在学フラグの判定
-		// チェックが入っている場合は "on" などの文字列が入り、入っていない場合は null になる
-		boolean isAttend = false;
-		if (isAttendStr != null) {
-			isAttend = true;
-		}
+        // 3. DBに保存（更新）
+        SubjectDao sDao = new SubjectDao();
+        sDao.save(subject);
 
-		// 学生Beanの作成と値のセット
-		Student student = new Student();
-		student.setEntYear(Integer.parseInt(entYearStr));
-		student.setStudentNo(studentNo);
-		student.setStudentName(studentName);
-		student.setClassNum(classNum);
-		student.setAttend(isAttend);
-		student.setSchool(teacher.getSchool());
-
-		// DBに保存（更新）
-		StudentDao studentDao = new StudentDao();
-		studentDao.save(student);
-
-		// 完了画面へ遷移
-		req.getRequestDispatcher("student_update_done.jsp").forward(req, res);
-	}
+        // 4. 完了画面へ遷移
+        req.getRequestDispatcher("subject_update_done.jsp").forward(req, res);
+    }
 }
