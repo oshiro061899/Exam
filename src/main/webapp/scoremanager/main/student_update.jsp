@@ -16,7 +16,7 @@
 			        <%-- 入学年度（表示のみ） --%>
 			        <div class="row mb-3">
 			            <div class="col-12 px-4">
-			                <label class="form-label">教員情報</label>
+			                <label class="form-label">入学年度</label>
 			                <%-- inputに変更 --%>
 			                <input class="form-control" type="text" name="ent_year" value="${student.entYear}" readonly>
 			            </div>

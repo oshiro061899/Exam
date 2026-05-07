@@ -18,7 +18,7 @@
 			            <div class="col-12 px-4">
 			                <label class="form-label">教員情報</label>
 			                <%-- inputに変更 --%>
-			                <input class="form-control" type="text" name="ent_year" value="${subject.user}" readonly>
+			                <input class="form-control" type="text" name="ent_year" value="${subject.teacher}" readonly>
 			            </div>
 			        </div>
 			
@@ -26,15 +26,15 @@
 			        <div class="row mb-3">
 			            <div class="col-12 px-4">
 			                <label class="form-label">科目番号</label>
-			                <input class="form-control" type="text" name="no" value="${subject.cd}" readonly>
+			                <input class="form-control" type="text" name="no" value="${subject.subjectCd}" readonly>
 			            </div>
 			        </div>
 			
 			        <%-- 氏名 --%>
 			        <div class="row mb-3">
 			            <div class="col-12 px-4">
-			                <label class="form-label">氏名</label>
-			                <input class="form-control" type="text" name="name" value="${subject.name}" 
+			                <label class="form-label">科目名</label>
+			                <input class="form-control" type="text" name="name" value="${subject.subjectName}" 
 			                       maxlength="30" placeholder="氏名を入力してください" required>
 			            </div>
 			        </div>
