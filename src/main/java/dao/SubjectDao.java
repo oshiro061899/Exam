@@ -29,8 +29,8 @@ public class SubjectDao extends Dao {
 			if (rSet.next()) {
 				// データが存在する場合、Beanにセット
 				subject = new Subject();
-				subject.setCd(rSet.getString("cd"));
-				subject.setName(rSet.getString("name"));
+				subject.setCd(rSet.getString("subject_cd"));
+				subject.setName(rSet.getString("subject_name"));
 				subject.setSchool(school);
 			}
 		} catch (Exception e) {
