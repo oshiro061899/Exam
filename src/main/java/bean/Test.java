@@ -1,17 +1,14 @@
 package bean;
 
-import javax.security.auth.Subject;
-
 public class Test {
 
     private Student student;
     private String classNum;
-    private Subject subject;
-    private School school;
+    private Subject cd;
+    private School schoolCd;
     private int no;
     private int point;
 
-    // --- getter / setter ---
 
  	public Student getStudent() {
 		return student;
@@ -29,20 +26,20 @@ public class Test {
         this.classNum = classNum;
     }
 	
-	public Subject getSubject() {
-		return subject;
+	public Subject getCd() {
+		return cd;
 	}
 
-	public void setSubject(Subject subject) {
-		this.subject = subject;
+	public void setCd(Subject cd) {
+		this.cd = cd;
 	}
 
     public School getSchool() {
-		return school;
+		return schoolCd;
 	}
 
-	public void setSchool(School school) {
-		this.school = school;
+	public void setSchoolCd(School schoolCd) {
+		this.schoolCd = schoolCd;
 	}
 
     public int getNo() {

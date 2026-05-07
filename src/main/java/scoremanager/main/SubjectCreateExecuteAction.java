@@ -3,8 +3,7 @@ package scoremanager.main;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.security.auth.Subject;
-
+import bean.Subject;
 import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;

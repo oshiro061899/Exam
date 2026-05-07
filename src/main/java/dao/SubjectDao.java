@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import bean.School;
 import bean.Subject;
@@ -20,7 +19,7 @@ public class SubjectDao extends Dao {
 
 		try {
 			// SQL文のセット：科目コードと学校コードで絞り込み
-			statement = connection.prepareStatement("select * from subject where cd = ? and school_cd = ?");
+			statement = connection.prepareStatement("select * from subject where subject_cd = ? and school_cd = ?");
 			statement.setString(1, cd);
 			statement.setString(2, school.getSchoolCd());
 			
@@ -62,13 +61,13 @@ public class SubjectDao extends Dao {
 
 			if (old == null) {
 				// 存在しない場合：INSERT（新規登録）
-				statement = connection.prepareStatement("insert into subject(cd, name, school_cd) values(?, ?, ?)");
+				statement = connection.prepareStatement("insert into subject(school_cd, subject_cd, subject_name) values(?, ?, ?)");
 				statement.setString(1, subject.getCd());
 				statement.setString(2, subject.getName());
 				statement.setString(3, subject.getSchool().getSchoolCd());
 			} else {
 				// 存在する場合：UPDATE（更新）
-				statement = connection.prepareStatement("update subject set name = ? where cd = ? and school_cd = ?");
+				statement = connection.prepareStatement("update subject set subject_name = ? where subject_cd = ? and school_cd = ?");
 				statement.setString(1, subject.getName());
 				statement.setString(2, subject.getCd());
 				statement.setString(3, subject.getSchool().getSchoolCd());
