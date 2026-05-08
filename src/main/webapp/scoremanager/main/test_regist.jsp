@@ -68,6 +68,7 @@
 					<div class="mt-2 text-warning">${errors.get("f1") }</div>
 				</div>
 			</form>
+			
 		</section>
 	</c:param>
 </c:import>

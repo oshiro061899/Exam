@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.School;
+import bean.Subject;
 import bean.Test;
 
 public class TestDao extends Dao {
@@ -42,12 +44,41 @@ public class TestDao extends Dao {
 
 				test = new Test();
 
-				test.setStudent(studentDao.get(resultSet.getString("student_no")));
-				test.setCd(subjectDao.get(resultSet.getString("subject_cd"),schoolDao.get(resultSet.getString("school_cd"))));
-				test.setSchoolCd(schoolDao.get(resultSet.getString("school_cd")));
-				test.setClassNum(resultSet.getString("class_num"));
-				test.setNo(resultSet.getInt("no"));
-				test.setPoint(resultSet.getInt("point"));
+				String schoolCd = resultSet.getString("school_cd");
+				String subCd = resultSet.getString("subject_cd");
+
+				School school = null;
+				Subject subject = null;
+
+				if (schoolCd != null) {
+					school = schoolDao.get(schoolCd);
+
+					test.setSchool(school);
+				}
+
+				if (subCd != null && school != null) {
+					subject = subjectDao.get(subCd, school);
+
+					test.setSubject(subject);
+				}
+
+				test.setStudent(
+					studentDao.get(
+						resultSet.getString("student_no")
+					)
+				);
+
+				test.setClassNum(
+					resultSet.getString("class_num")
+				);
+
+				test.setNo(
+					resultSet.getInt("no")
+				);
+
+				test.setPoint(
+					resultSet.getInt("point")
+				);
 			}
 
 		} catch (Exception e) {
@@ -77,7 +108,8 @@ public class TestDao extends Dao {
 	}
 
 	// ResultSet → List変換
-	private List<Test> postFilter(ResultSet resultSet) throws Exception {
+	private List<Test> postFilter(ResultSet resultSet)
+		throws Exception {
 
 		List<Test> list = new ArrayList<>();
 
@@ -91,24 +123,71 @@ public class TestDao extends Dao {
 
 				Test test = new Test();
 
-				test.setStudent(studentDao.get(resultSet.getString("student_no")));
-				test.setCd(subjectDao.get(resultSet.getString("subject_cd"),schoolDao.get(resultSet.getString("school_cd"))));
-				test.setSchoolCd(schoolDao.get(resultSet.getString("school_cd")));
-				test.setClassNum(resultSet.getString("class_num"));
-				test.setNo(resultSet.getInt("no"));
-				test.setPoint(resultSet.getInt("point"));
+				String schoolCd =
+					resultSet.getString("school_cd");
+
+				String subjectCd =
+					resultSet.getString("subject_cd");
+
+				School school = null;
+				Subject subject = null;
+
+				// school が存在する場合
+				if (schoolCd != null) {
+
+					school = schoolDao.get(schoolCd);
+
+					test.setSchool(school);
+				}
+
+				// subject が存在する場合
+				if (subjectCd != null && school != null) {
+
+					subject = subjectDao.get(
+						subjectCd,
+						school
+					);
+
+					test.setSubject(subject);
+				}
+
+				test.setStudent(
+					studentDao.get(
+						resultSet.getString("student_no")
+					)
+				);
+
+				test.setClassNum(
+					resultSet.getString("class_num")
+				);
+
+				test.setNo(
+					resultSet.getInt("no")
+				);
+
+				test.setPoint(
+					resultSet.getInt("point")
+				);
 
 				list.add(test);
 			}
 
 		} catch (SQLException | NullPointerException e) {
+
 			e.printStackTrace();
 		}
+
 		return list;
 	}
 
 	// 条件検索
-	public List<Test> filter(String schoolCd, int entYear, String classNum, String subjectCd, int no) throws Exception {
+	public List<Test> filter(
+		String schoolCd,
+		int entYear,
+		String classNum,
+		String subjectCd,
+		int no
+	) throws Exception {
 
 		List<Test> list = new ArrayList<>();
 
@@ -137,7 +216,6 @@ public class TestDao extends Dao {
 
 			statement = connection.prepareStatement(sql);
 
-			// SQLの ? の順番に合わせる
 			statement.setString(1, subjectCd);
 			statement.setInt(2, no);
 			statement.setString(3, schoolCd);
@@ -179,7 +257,7 @@ public class TestDao extends Dao {
 			// 既存データ確認
 			Test old = get(
 				test.getStudent().getStudentNo(),
-				test.getCd().getCd(),
+				test.getSubject().getCd(),
 				test.getNo()
 			);
 
@@ -190,31 +268,77 @@ public class TestDao extends Dao {
 					"insert into test(student_no, subject_cd, school_cd, class_num, no, point) values(?, ?, ?, ?, ?, ?)"
 				);
 
-				statement.setString(1,test.getStudent().getStudentNo());
-				statement.setString(2,test.getCd().getCd());
-				statement.setString(3,test.getSchool().getSchoolCd());
-				statement.setString(4,test.getClassNum());
-				statement.setInt(5,test.getNo());
-				statement.setInt(6,test.getPoint());
+				statement.setString(
+					1,
+					test.getStudent().getStudentNo()
+				);
+
+				statement.setString(
+					2,
+					test.getSubject().getCd()
+				);
+
+				statement.setString(
+					3,
+					test.getSchool().getSchoolCd()
+				);
+
+				statement.setString(
+					4,
+					test.getClassNum()
+				);
+
+				statement.setInt(
+					5,
+					test.getNo()
+				);
+
+				statement.setInt(
+					6,
+					test.getPoint()
+				);
 
 			// 更新
 			} else {
+
 				statement = connection.prepareStatement(
 					"update test set point = ? where student_no = ? and subject_cd = ? and school_cd = ? and no = ?"
 				);
 
-				statement.setInt(1,test.getPoint());
-				statement.setString(2,test.getStudent().getStudentNo());
-				statement.setString(3,test.getCd().getCd());
-				statement.setString(4, test.getSchool().getSchoolCd());
-				statement.setInt(5, test.getNo());
+				statement.setInt(
+					1,
+					test.getPoint()
+				);
+
+				statement.setString(
+					2,
+					test.getStudent().getStudentNo()
+				);
+
+				statement.setString(
+					3,
+					test.getSubject().getCd()
+				);
+
+				statement.setString(
+					4,
+					test.getSchool().getSchoolCd()
+				);
+
+				statement.setInt(
+					5,
+					test.getNo()
+				);
 			}
+
 			count = statement.executeUpdate();
-			
+
 		} catch (Exception e) {
+
 			throw e;
 
 		} finally {
+
 			if (statement != null) {
 				try {
 					statement.close();

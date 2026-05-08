@@ -1,6 +1,5 @@
 package scoremanager.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bean.Subject;
@@ -21,19 +20,14 @@ public class SubjectListAction extends Action {
         Teacher teacher = (Teacher) session.getAttribute("user");
 
         // 1. ローカル変数の初期化
-        List<Subject> subjects = new ArrayList<>(); // 空のリストを作成
         SubjectDao subjectDao = new SubjectDao();
 
-        // 2. 既存の get メソッドを使ってデータを取得する
-        // ※ 本来は一覧取得が必要ですが、既存の get(String, School) を呼ぶ形にします。
-        // テスト用に、科目コード "A001" などを直接指定して1件だけ取得してみる例です。
-        Subject subject = subjectDao.get("A001", teacher.getSchool());
-        
-        if (subject != null) {
-            subjects.add(subject); // 取得できたらリストに追加
-        }
+        // 2. DBからログインユーザーの学校に紐づく全科目を抜き出す
+        // get(1件) ではなく filter(全件) を使用します
+        List<Subject> subjects = subjectDao.filter(teacher.getSchool());
 
         // 3. レスポンス値をセット
+        // JSP側の ${subjects} で参照できるようにセット
         req.setAttribute("subjects", subjects);
 
         // 4. JSPへフォワード

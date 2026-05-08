@@ -9,30 +9,28 @@ import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
 public class SubjectUpdateExecuteAction extends Action {
-
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        // セッションからユーザー（教員）情報を取得
+        
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // 1. パラメータ（科目コードと科目名）を取得
-        // JSPの"cd"と"name"から送られてくる値
-        String subjectCd = req.getParameter("cd");
-        String subjectName = req.getParameter("name");
+        // 1. パラメータを取得
+        String cd = req.getParameter("cd");
+        String name = req.getParameter("name");
 
-        // 2. 科目Beanの作成と値のセット
+        // 2. Beanを組み立てる
         Subject subject = new Subject();
-        subject.setCd(subjectCd);
-        subject.setName(subjectName);
-        // ログイン中の教員の学校をセット
+        subject.setCd(cd);
+        subject.setName(name);
         subject.setSchool(teacher.getSchool());
 
-        // 3. DBに保存（更新）
+        // 3. DBを更新（DAOのsaveメソッドは、既存データがあればUPDATEする設計になっています）
         SubjectDao sDao = new SubjectDao();
         sDao.save(subject);
 
-        // 4. 完了画面へ遷移
+        // 4. 完了画面へフォワード、または一覧へリダイレクト
+        // ここでは一覧へ戻る例にします
         req.getRequestDispatcher("subject_update_done.jsp").forward(req, res);
     }
 }

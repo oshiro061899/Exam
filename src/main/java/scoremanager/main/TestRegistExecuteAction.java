@@ -48,13 +48,15 @@ public class TestRegistExecuteAction extends Action {
 			Test test = new Test();
 
 			test.setStudent(
-				studentDao.get(studentNos[i])
+			    studentDao.get(studentNos[i])
 			);
 
-			test.setCd(subject);
+			test.setSubject(subject);
 
-			test.setSchoolCd(
-				teacher.getSchool()
+			test.setSchool(teacher.getSchool());
+
+			test.setClassNum(
+			    test.getStudent().getClassNum()
 			);
 
 			test.setNo(no);
@@ -62,10 +64,6 @@ public class TestRegistExecuteAction extends Action {
 			test.setPoint(point);
 
 			testDao.save(test);
-			
-			test.setClassNum(
-					test.getStudent().getClassNum()
-				);
 		}
 
 		req.getRequestDispatcher("test_regist_done.jsp")

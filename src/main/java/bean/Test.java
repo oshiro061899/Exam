@@ -1,60 +1,31 @@
 package bean;
 
-public class Test {
+import java.io.Serializable;
 
-    private Student student;
-    private String classNum;
-    private Subject cd;
-    private School schoolCd;
-    private int no;
-    private int point;
+public class Test implements Serializable {
+    private Student student; // 学生
+    private String classNum; // クラス番号（GitHub側にあったので追加）
+    private Subject subject; // 科目（GitHubではcdとなっていましたがsubjectに統一）
+    private School school;   // 学校
+    private int no;          // 回数
+    private int point;       // 得点
 
+    // ゲッターとセッター
+    public Student getStudent() { return student; }
+    public void setStudent(Student student) { this.student = student; }
 
- 	public Student getStudent() {
-		return student;
-	}
+    public String getClassNum() { return classNum; }
+    public void setClassNum(String classNum) { this.classNum = classNum; }
 
-	public void setStudent(Student student) {
-		this.student = student;
-	}
-	
-    public String getClassNum() {
-        return classNum;
-    }
+    public Subject getSubject() { return subject; }
+    public void setSubject(Subject subject) { this.subject = subject; }
 
-    public void setClassNum(String classNum) {
-        this.classNum = classNum;
-    }
-	
-	public Subject getCd() {
-		return cd;
-	}
+    public School getSchool() { return school; }
+    public void setSchool(School school) { this.school = school; }
 
-	public void setCd(Subject cd) {
-		this.cd = cd;
-	}
+    public int getNo() { return no; }
+    public void setNo(int no) { this.no = no; }
 
-    public School getSchool() {
-		return schoolCd;
-	}
-
-	public void setSchoolCd(School schoolCd) {
-		this.schoolCd = schoolCd;
-	}
-
-    public int getNo() {
-        return no;
-    }
-
-    public void setNo(int no) {
-        this.no = no;
-    }
-
-    public int getPoint() {
-        return point;
-    }
-
-    public void setPoint(int point) {
-        this.point = point;
-    }
+    public int getPoint() { return point; }
+    public void setPoint(int point) { this.point = point; }
 }
