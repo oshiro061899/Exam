@@ -2,7 +2,7 @@ package scoremanager.main;
 
 import bean.Student;
 import bean.Teacher;
-import dao.TestDao;
+import dao.StudentDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -40,8 +40,8 @@ public class StudentUpdateExecuteAction extends Action {
 		student.setSchool(teacher.getSchool());
 
 		// DBに保存（更新）
-		TestDao TestDao = new TestDao();
-		TestDao.save(student);
+		StudentDao StudentDao = new StudentDao();
+		StudentDao.save(student);
 
 		// 完了画面へ遷移
 		req.getRequestDispatcher("test_update_done.jsp").forward(req, res);
