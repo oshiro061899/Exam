@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import bean.School;
 import bean.Subject;
@@ -45,6 +47,14 @@ public class SubjectDao extends Dao {
 			}
 		}
 		return subject;
+	}
+	
+	public List<Subject> filter(School school) throws Exception {
+	    List<Subject> list = new ArrayList<>();
+	    // SQL: "select * from subject where school_cd = ? order by cd asc"
+	    // teacher.getSchool().getSchoolCd() を使ってDBから取得し、
+	    // Subject Bean に詰めてリストに追加する処理
+	    return list;
 	}
 
 	/**
