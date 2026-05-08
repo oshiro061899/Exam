@@ -1,55 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <c:import url="/common/base.jsp">
-	<c:param name="title">得点管理システム</c:param>
-
-	<c:param name="content">
-		<section class="me-4">
-			<%-- No.1 画面タイトル --%>
-			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">科目変更</h2>
-
-			<%-- 中略（タイトル部分など） --%>
-
-			<form action="SubjectUpdateExecute.action" method="post"> <%-- 更新用のActionへ --%>
-			    <div class="container-fluid">
-			
-			        <%-- 入学年度（表示のみ） --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">教員情報</label>
-			                <%-- inputに変更 --%>
-			                <input class="form-control" type="text" name="ent_year" value="${subject.teacher}" readonly>
-			            </div>
-			        </div>
-			
-			        <%-- 学生番号（表示のみ） --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">科目番号</label>
-			                <input class="form-control" type="text" name="no" value="${subject.subjectCd}" readonly>
-			            </div>
-			        </div>
-			
-			        <%-- 氏名 --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">科目名</label>
-			                <input class="form-control" type="text" name="name" value="${subject.subjectName}" 
-			                       maxlength="30" placeholder="氏名を入力してください" required>
-			            </div>
-			        </div>
-			
-			        
-			        
-			        <%-- 変更ボタン --%>
-			        <div class="row mt-4">
-			            <div class="col-12 px-4">
-			                <button type="submit" class="btn btn-primary">変更</button>
-			            </div>
-			        </div>
-
-			</form>
-<%-- 以下、戻るリンクなど略 --%>			
-		</section>
-	</c:param>
+    <c:param name="title">得点管理システム</c:param>
+    <c:param name="content">
+        <section class="me-4">
+            <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">科目情報変更</h2>
+            <form action="SubjectUpdateExecute.action" method="post">
+                <div class="mb-3">
+                    <label class="form-label">科目コード</label>
+                    <%-- コードは変更不可にするため、表示のみ。値はhiddenで送る --%>
+                    <p class="form-control-plaintext px-3">${subject.cd}</p>
+                    <input type="hidden" name="cd" value="${subject.cd}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="subject-name-input" class="form-label">科目名</label>
+                    <input type="text" class="form-control" id="subject-name-input" name="name" 
+                           value="${subject.name}" placeholder="科目名を入力してください" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">変更を保存する</button>
+                <a href="SubjectList.action" class="btn btn-secondary">キャンセル</a>
+            </form>
+        </section>
+    </c:param>
 </c:import>
