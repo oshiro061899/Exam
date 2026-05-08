@@ -108,7 +108,7 @@ public class TestDao extends Dao {
 	}
 
 	// 条件検索
-	public List<Test> filter(String schoolCd,int entYear,String classNum,String subjectCd,int no) throws Exception {
+	public List<Test> filter(String schoolCd, int entYear, String classNum, String subjectCd, int no) throws Exception {
 
 		List<Test> list = new ArrayList<>();
 
@@ -117,25 +117,32 @@ public class TestDao extends Dao {
 		ResultSet resultSet = null;
 
 		String sql =
-			"select t.* " +
-			"from test t " +
-			"join student s on t.student_no = s.student_no " +
-			"where t.school_cd = ? " +
-			"and s.ent_year = ? " +
-			"and s.class_num = ? " +
+			"select s.no as student_no, " +
+			"s.class_num, " +
+			"t.subject_cd, " +
+			"t.school_cd, " +
+			"t.no, " +
+			"t.point " +
+			"from student s " +
+			"left join test t " +
+			"on s.no = t.student_no " +
 			"and t.subject_cd = ? " +
 			"and t.no = ? " +
-			"order by t.student_no asc";
+			"where s.school_cd = ? " +
+			"and s.ent_year = ? " +
+			"and s.class_num = ? " +
+			"order by s.no";
 
 		try {
 
 			statement = connection.prepareStatement(sql);
 
-			statement.setString(1, schoolCd);
-			statement.setInt(2, entYear);
-			statement.setString(3, classNum);
-			statement.setString(4, subjectCd);
-			statement.setInt(5, no);
+			// SQLの ? の順番に合わせる
+			statement.setString(1, subjectCd);
+			statement.setInt(2, no);
+			statement.setString(3, schoolCd);
+			statement.setInt(4, entYear);
+			statement.setString(5, classNum);
 
 			resultSet = statement.executeQuery();
 
@@ -148,19 +155,11 @@ public class TestDao extends Dao {
 		} finally {
 
 			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
+				statement.close();
 			}
 
 			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException sqle) {
-					throw sqle;
-				}
+				connection.close();
 			}
 		}
 
@@ -201,13 +200,14 @@ public class TestDao extends Dao {
 			// 更新
 			} else {
 				statement = connection.prepareStatement(
-					"update test set point = ? where student_no = ? and subject_cd = ? and no = ?"
+					"update test set point = ? where student_no = ? and subject_cd = ? and school_cd = ? and no = ?"
 				);
 
 				statement.setInt(1,test.getPoint());
 				statement.setString(2,test.getStudent().getStudentNo());
 				statement.setString(3,test.getCd().getCd());
-				statement.setInt(4,test.getNo());
+				statement.setString(4, test.getSchool().getSchoolCd());
+				statement.setInt(5, test.getNo());
 			}
 			count = statement.executeUpdate();
 			
