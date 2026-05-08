@@ -3,15 +3,19 @@ package bean;
 import java.io.Serializable;
 
 public class Test implements Serializable {
-    private Student student; // 学生Bean
-    private Subject subject; // 科目Bean
-    private School school;   // 学校Bean
+    private Student student; // 学生
+    private String classNum; // クラス番号（GitHub側にあったので追加）
+    private Subject subject; // 科目（GitHubではcdとなっていましたがsubjectに統一）
+    private School school;   // 学校
     private int no;          // 回数
     private int point;       // 得点
 
     // ゲッターとセッター
     public Student getStudent() { return student; }
     public void setStudent(Student student) { this.student = student; }
+
+    public String getClassNum() { return classNum; }
+    public void setClassNum(String classNum) { this.classNum = classNum; }
 
     public Subject getSubject() { return subject; }
     public void setSubject(Subject subject) { this.subject = subject; }
