@@ -1,56 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <c:import url="/common/base.jsp">
-	<c:param name="title">得点管理システム</c:param>
+    <c:param name="title">得点管理システム</c:param>
+    <c:param name="content">
+        <section class="me-4">
+            <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績変更</h2>
+            
+            <form action="TestUpdateExecute.action" method="post">
+                <div class="row mb-3">
+                    <div class="col-3">学籍番号: ${test.student.studentNo}</div>
+                    <div class="col-3">氏名: ${test.student.studentName}</div>
+                    <div class="col-3">科目: ${test.subject.name}</div>
+                    <div class="col-3">${test.no}回目</div>
+                </div>
 
-	<c:param name="content">
-		<section class="me-4">
-			<%-- No.1 画面タイトル --%>
-			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績変更</h2>
-			
-			
-			<%-- 中略（タイトル部分など） --%>
+                <%-- 更新に必要なキー情報はhiddenで送信 --%>
+                <input type="hidden" name="student_no" value="${test.student.studentNo}">
+                <input type="hidden" name="subject_cd" value="${test.subject.cd}">
+                <input type="hidden" name="num" value="${test.no}">
 
-			<form action="SubjectUpdateExecute.action" method="post"> <%-- 更新用のActionへ --%>
-			    <div class="container-fluid">
-			
-			        <%-- 入学年度（表示のみ） --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">教員情報</label>
-			                <%-- inputに変更 --%>
-			                <input class="form-control" type="text" name="ent_year" value="${subject.teacher}" readonly>
-			            </div>
-			        </div>
-			
-			        <%-- 学生番号（表示のみ） --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">科目番号</label>
-			                <input class="form-control" type="text" name="no" value="${subject.subjectCd}" readonly>
-			            </div>
-			        </div>
-			
-			        <%-- 氏名 --%>
-			        <div class="row mb-3">
-			            <div class="col-12 px-4">
-			                <label class="form-label">科目名</label>
-			                <input class="form-control" type="text" name="name" value="${subject.subjectName}" 
-			                       maxlength="30" placeholder="氏名を入力してください" required>
-			            </div>
-			        </div>
-			
-			        
-			        
-			        <%-- 変更ボタン --%>
-			        <div class="row mt-4">
-			            <div class="col-12 px-4">
-			                <button type="submit" class="btn btn-primary">変更</button>
-			            </div>
-			        </div>
+                <div class="mb-3">
+                    <label for="point-input" class="form-label">点数</label>
+                    <input type="number" class="form-control" id="point-input" name="point" 
+                           value="${test.point}" min="0" max="100" required>
+                </div>
 
-			</form>
-<%-- 以下、戻るリンクなど略 --%>			
-		</section>
-	</c:param>
+                <button type="submit" class="btn btn-primary">変更を保存する</button>
+                <a href="TestList.action" class="btn btn-secondary">キャンセル</a>
+            </form>
+        </section>
+    </c:param>
 </c:import>
