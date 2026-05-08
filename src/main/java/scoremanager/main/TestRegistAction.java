@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.Subject;
 import bean.Teacher;
-import bean.Test;
 import dao.ClassNumDao;
 import dao.SubjectDao;
 import dao.TestDao;
@@ -18,114 +16,55 @@ import tool.Action;
 public class TestRegistAction extends Action {
 
 	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res)
-		throws Exception {
+	public void execute(
+		HttpServletRequest req,
+		HttpServletResponse res
+	) throws Exception {
 
 		HttpSession session = req.getSession();
 
 		Teacher teacher =
-			(Teacher) session.getAttribute("user");
+			(Teacher)session.getAttribute("user");
 
-		// DAO
-		ClassNumDao classNumDao =
-			new ClassNumDao();
+		int entYear = 0;
+		String classNum = "";
+		String subjectCd = "";
+		int no = 0;
 
-		SubjectDao subjectDao =
-			new SubjectDao();
+		String entYearStr = req.getParameter("f1");
+		classNum = req.getParameter("f2");
+		subjectCd = req.getParameter("f3");
 
-		TestDao testDao =
-			new TestDao();
+		String noStr = req.getParameter("f4");
 
-		// 現在年
-		LocalDate todaysDate =
-			LocalDate.now();
+		if (entYearStr != null && !entYearStr.equals("")) {
+			entYear = Integer.parseInt(entYearStr);
+		}
 
-		int year =
-			todaysDate.getYear();
+		if (noStr != null && !noStr.equals("")) {
+			no = Integer.parseInt(noStr);
+		}
 
-		// 入学年度リスト
-		List<Integer> entYearSet =
-			new ArrayList<>();
+		LocalDate todaysDate = LocalDate.now();
 
-		for (int i = year - 10; i < year + 1; i++) {
+		int year = todaysDate.getYear();
+
+		List<Integer> entYearSet = new ArrayList<>();
+
+		for (int i = year - 10; i <= year; i++) {
 			entYearSet.add(i);
 		}
 
-		// クラス一覧
+		ClassNumDao classNumDao = new ClassNumDao();
+
 		List<String> classNumSet =
-			classNumDao.filter(
-				teacher.getSchool()
-			);
+			classNumDao.filter(teacher.getSchool());
 
-		// 科目一覧
-		List<Subject> subjectSet =
-			subjectDao.filter(
-				teacher.getSchool()
-			);
+		SubjectDao subjectDao = new SubjectDao();
 
-		// 回数一覧
-		List<Integer> noSet =
-			new ArrayList<>();
+		TestDao testDao = new TestDao();
 
-		for (int i = 1; i <= 10; i++) {
-			noSet.add(i);
-		}
-
-		// 検索条件取得
-		String entYearStr =
-			req.getParameter("f1");
-
-		String classNum =
-			req.getParameter("f2");
-
-		String subjectCd =
-			req.getParameter("subject_cd");
-
-		String noStr =
-			req.getParameter("no");
-
-		List<Test> testList = null;
-
-		// 条件が揃ったら検索
-		if (entYearStr != null &&
-			!entYearStr.equals("0") &&
-			classNum != null &&
-			!classNum.equals("0") &&
-			subjectCd != null &&
-			!subjectCd.equals("") &&
-			noStr != null &&
-			!noStr.equals("")) {
-
-			int entYear =
-				Integer.parseInt(entYearStr);
-
-			int no =
-				Integer.parseInt(noStr);
-
-			testList = testDao.filter(
-				teacher.getSchool().getSchoolCd(),
-				entYear,
-				classNum,
-				subjectCd,
-				no
-			);
-		}
-
-		// requestへセット
-		req.setAttribute("f1", entYearStr);
-		req.setAttribute("f2", classNum);
-		req.setAttribute("subject_cd", subjectCd);
-		req.setAttribute("no", noStr);
-
-		req.setAttribute(
-			"test_list",
-			testList
-		);
-
-		req.setAttribute(
-			"ent_year_set",
-			entYearSet
-		);
+		req.setAttribute("ent_year_set", entYearSet);
 
 		req.setAttribute(
 			"class_num_set",
@@ -134,16 +73,33 @@ public class TestRegistAction extends Action {
 
 		req.setAttribute(
 			"subject_set",
-			subjectSet
+			subjectDao.filter(teacher.getSchool())
 		);
 
-		req.setAttribute(
-			"no_set",
-			noSet
-		);
+		req.setAttribute("f1", entYear);
+		req.setAttribute("f2", classNum);
+		req.setAttribute("f3", subjectCd);
+		req.setAttribute("f4", no);
 
-		req.getRequestDispatcher(
-			"test_regist.jsp"
-		).forward(req, res);
+		if (
+			entYear != 0 &&
+			!classNum.equals("") &&
+			!subjectCd.equals("") &&
+			no != 0
+		) {
+
+			req.setAttribute(
+				"tests",
+				testDao.filter(
+					teacher.getSchool(),
+					entYear,
+					classNum,
+					subjectCd,
+					no
+				)
+			);
+		}
+
+		req.getRequestDispatcher("test_regist.jsp").forward(req, res);
 	}
 }

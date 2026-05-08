@@ -16,9 +16,9 @@
 				<br>
 				<br>
 				<br>
-				<a href="SubjectCreate.action">戻る</a>
+				<a href="TestRegist.action">戻る</a>
 				<a>　　　　　</a>
-				<a href="SubjectList.action">成績参照</a>
+				<a href="TestList.action">成績参照</a>
 			</div>
 		</div>
 	</c:param>
