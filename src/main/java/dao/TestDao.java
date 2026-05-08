@@ -131,7 +131,7 @@ public class TestDao extends Dao {
 		int count = 0;
 
 		try {
-			// 既存データの確認
+			// 既存データの確認!
 			Test old = get(test.getStudent().getStudentNo(), test.getSubject().getCd(), test.getNo(), test.getSchool());
 
 			if (old == null) {
