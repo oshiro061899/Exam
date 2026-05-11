@@ -1,4 +1,5 @@
 <%-- 成績登録JSP --%>
+<%-- 残りエラー処理 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" %>
 
@@ -230,6 +231,9 @@
 										value="${test.point}"
 										class="form-control"
 									>
+									<div class="text-warning">
+										${errors.get(test.student.studentNo)}
+									</div>
 
 								</td>
 
