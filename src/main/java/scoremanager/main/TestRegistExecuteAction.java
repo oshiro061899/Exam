@@ -28,7 +28,7 @@ public class TestRegistExecuteAction extends Action {
 
 		// ログインユーザー取得
 		Teacher teacher =
-			(Teacher)session.getAttribute("user");
+			(Teacher) session.getAttribute("user");
 
 		// パラメータ取得
 		String[] studentNo =
@@ -69,55 +69,65 @@ public class TestRegistExecuteAction extends Action {
 				continue;
 			}
 
-			int point =
-				Integer.parseInt(points[i]);
+			try {
 
-			// 点数チェック
-			if (
-				point < 0 ||
-				point > 100
-			) {
+				int point =
+					Integer.parseInt(points[i]);
+
+				// 点数チェック
+				if (
+					point < 0 ||
+					point > 100
+				) {
+
+					errors.put(
+						studentNo[i],
+						"0～100の範囲で入力してください"
+					);
+
+				} else {
+
+					// Bean作成
+					Test test = new Test();
+
+					Student student =
+						new Student();
+
+					student.setStudentNo(
+						studentNo[i]
+					);
+
+					Subject subject =
+						new Subject();
+
+					subject.setCd(subjectCd);
+
+					School school =
+						teacher.getSchool();
+
+					// Testへセット
+					test.setStudent(student);
+
+					test.setSubject(subject);
+
+					test.setSchool(school);
+
+					test.setClassNum(classNum);
+
+					test.setNo(no);
+
+					test.setPoint(point);
+
+					// 保存
+					testDao.save(test);
+				}
+
+			} catch (NumberFormatException e) {
 
 				errors.put(
 					studentNo[i],
-					"0～100の範囲で入力してください"
+					"点数は数字で入力してください"
 				);
-
-			} else {
-
-				// Bean作成
-				Test test = new Test();
-
-				Student student =
-					new Student();
-
-				student.setStudentNo(
-					studentNo[i]
-				);
-
-				Subject subject =
-					new Subject();
-
-				subject.setCd(subjectCd);
-
-				School school =
-					teacher.getSchool();
-
-				// Testへセット
-				test.setStudent(student);
-
-				test.setSubject(subject);
-
-				test.setSchool(school);
-
-				test.setClassNum(classNum);
-
-				test.setNo(no);
-
-				test.setPoint(point);
-
-				// 保存
-				testDao.save(test);
 			}
 		}
 
@@ -143,8 +153,22 @@ public class TestRegistExecuteAction extends Action {
 
 		} else {
 
+			// 再検索結果を設定
+			req.setAttribute(
+				"tests",
+				testDao.filter(
+					teacher.getSchool(),
+					Integer.parseInt(entYear),
+					classNum,
+					subjectCd,
+					no
+				)
+			);
+
 			// 登録画面へ戻る
-			new TestRegistAction().execute(req, res);
+			req.getRequestDispatcher(
+				"test_regist.jsp"
+			).forward(req, res);
 		}
 	}
 }

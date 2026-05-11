@@ -12,9 +12,7 @@
 	</c:param>
 
 	<c:param name="scripts"></c:param>
-
 	<c:param name="content">
-
 		<section class="me-4">
 
 			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
@@ -23,7 +21,6 @@
 
 			<%-- 検索フォーム --%>
 			<form action="TestRegist.action" method="get">
-
 				<div class="row border mx-3 mb-3 py-3 align-items-end rounded">
 
 					<%-- 入学年度 --%>
@@ -31,13 +28,9 @@
 						<label class="form-label" for="f1">
 							入学年度
 						</label>
-
 						<select class="form-select" id="f1" name="f1">
-
 							<option value="">----------</option>
-
 							<c:forEach var="year" items="${ent_year_set}">
-
 								<option
 									value="${year}"
 									<c:if test="${year == f1}">
@@ -46,25 +39,18 @@
 								>
 									${year}
 								</option>
-
 							</c:forEach>
-
 						</select>
 					</div>
 
 					<%-- クラス --%>
 					<div class="col-2">
-
 						<label class="form-label" for="f2">
 							クラス
 						</label>
-
 						<select class="form-select" id="f2" name="f2">
-
 							<option value="">----------</option>
-
 							<c:forEach var="num" items="${class_num_set}">
-
 								<option
 									value="${num}"
 									<c:if test="${num == f2}">
@@ -73,25 +59,18 @@
 								>
 									${num}
 								</option>
-
 							</c:forEach>
-
 						</select>
 					</div>
 
 					<%-- 科目 --%>
 					<div class="col-3">
-
 						<label class="form-label" for="f3">
 							科目
 						</label>
-
 						<select class="form-select" id="f3" name="f3">
-
 							<option value="">----------</option>
-
 							<c:forEach var="subject" items="${subject_set}">
-
 								<option
 									value="${subject.cd}"
 									<c:if test="${subject.cd == f3}">
@@ -100,25 +79,18 @@
 								>
 									${subject.name}
 								</option>
-
 							</c:forEach>
-
 						</select>
 					</div>
 
 					<%-- 回数 --%>
 					<div class="col-2">
-
 						<label class="form-label" for="f4">
 							回数
 						</label>
-
 						<select class="form-select" id="f4" name="f4">
-
 							<option value="">----------</option>
-
 							<c:forEach begin="1" end="10" var="count">
-
 								<option
 									value="${count}"
 									<c:if test="${count == f4}">
@@ -127,39 +99,28 @@
 								>
 									${count}
 								</option>
-
 							</c:forEach>
-
 						</select>
 					</div>
 
 					<%-- 検索ボタン --%>
 					<div class="col-2 text-center">
-
 						<button class="btn btn-secondary">
 							検索
 						</button>
-
 					</div>
-
 				</div>
-
 			</form>
 
 			<%-- 検索結果 --%>
 			<c:if test="${tests != null}">
-
 				<div class="mx-3 mb-2">
-
 					科目：
 					<c:forEach var="subject" items="${subject_set}">
-
 						<c:if test="${subject.cd == f3}">
 							${subject.name}
 						</c:if>
-
 					</c:forEach>
-
 					（${f4}回）
 
 				</div>
@@ -168,7 +129,12 @@
 					action="TestRegistExecute.action"
 					method="post"
 				>
-
+					<input
+						type="hidden"
+						name="ent_year"
+						value="${f1}"
+					>
+					
 					<input
 						type="hidden"
 						name="subject_cd"
@@ -224,16 +190,16 @@
 								</td>
 
 								<td>
-
+									<div class="mt-2 text-warning">
+										${errors.get(test.student.studentNo)}
+									</div>
 									<input
 										type="text"
 										name="point"
 										value="${test.point}"
 										class="form-control"
 									>
-									<div class="text-warning">
-										${errors.get(test.student.studentNo)}
-									</div>
+
 
 								</td>
 
