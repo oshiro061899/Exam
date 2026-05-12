@@ -292,6 +292,44 @@ public class TestDao extends Dao {
 			}
 		}
 
-		return count > 0;
-	}
+		return count > 0;} 
+/**
+ * 特定の学生の全成績を取得する
+ */
+public List<Test> filter(Student student) throws Exception {
+    List<Test> list = new ArrayList<>();
+    Connection connection = getConnection();
+    PreparedStatement statement = null;
+
+    // 科目名も表示したいので subjectテーブルをJOIN
+    String sql = "select t.*, s.subject_name from test t " +
+                 "join subject s on t.subject_cd = s.subject_cd and t.school_cd = s.school_cd " +
+                 "where t.student_no = ? order by t.subject_cd asc, t.no asc";
+
+    try {
+        statement = connection.prepareStatement(sql);
+        statement.setString(1, student.getStudentNo());
+        ResultSet rSet = statement.executeQuery();
+
+        while (rSet.next()) {
+            Test test = new Test();
+            test.setStudent(student);
+
+            Subject sub = new Subject();
+            sub.setCd(rSet.getString("subject_cd"));
+            sub.setName(rSet.getString("subject_name"));
+            test.setSubject(sub);
+
+            test.setNo(rSet.getInt("no"));
+            test.setPoint(rSet.getInt("point"));
+
+            list.add(test);
+        }
+    } finally {
+        if (statement != null) statement.close();
+        if (connection != null) connection.close();
+    }
+    return list;
 }
+}
+	
