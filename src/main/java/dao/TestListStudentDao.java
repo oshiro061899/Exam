@@ -12,45 +12,45 @@ import bean.Test;
 
 public class TestListStudentDao extends Dao {
 
+    /**
+     * 学生情報から成績リストを取得する
+     */
     public List<Test> filter(Student student) throws Exception {
+        List<List<Test>> result = new ArrayList<>(); // 実際にはList<Test>で返せばOKです
         List<Test> list = new ArrayList<>();
+        
         Connection connection = getConnection();
         PreparedStatement statement = null;
 
-        
+        // 科目名を取得するために SUBJECT テーブルと JOIN します
         String sql = "SELECT t.subject_cd, s.subject_name, t.no, t.point " +
                      "FROM test t " +
                      "JOIN subject s ON t.subject_cd = s.subject_cd AND t.school_cd = s.school_cd " +
-                     "WHERE t.student_no = ? AND t.school_cd = ? AND t.point IS NOT NULL " + 
+                     "WHERE t.student_no = ? " +
                      "ORDER BY t.subject_cd ASC, t.no ASC";
 
         try {
             statement = connection.prepareStatement(sql);
             statement.setString(1, student.getStudentNo());
-            statement.setString(2, student.getSchool().getSchoolCd());
-            
             ResultSet rSet = statement.executeQuery();
 
             while (rSet.next()) {
                 Test test = new Test();
-                
-                // 科目情報のセット
                 Subject subject = new Subject();
+                
+                // 科目情報をセット
                 subject.setCd(rSet.getString("subject_cd"));
                 subject.setName(rSet.getString("subject_name"));
                 
-                test.setStudent(student);
                 test.setSubject(subject);
                 test.setNo(rSet.getInt("no"));
                 test.setPoint(rSet.getInt("point"));
-                test.setSchool(student.getSchool());
                 
                 list.add(test);
             }
         } catch (Exception e) {
             throw e;
         } finally {
-            // Daoクラスの仕組みに合わせ、安全にクローズ
             if (statement != null) statement.close();
             if (connection != null) connection.close();
         }

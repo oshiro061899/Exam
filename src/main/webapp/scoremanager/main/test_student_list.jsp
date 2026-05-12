@@ -7,18 +7,16 @@
         <section class="me-4">
             <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績参照</h2>
 
-            <%-- 検索フィルターエリア：学生一覧と同じ id="filter" と row クラスを使用 --%>
-            <div class="row border mx-3 mb-3 py-3 align-items-center rounded" id="filter">
+            <%-- 1. 検索フィルターエリア (検索窓) --%>
+            <div class="border mx-3 mb-3 py-3 rounded" id="filter" style="background-color: #fff;">
                 
                 <%-- 【A：科目情報検索】 --%>
-                <form action="TestSubjectList.action" method="get" class="col-12 mb-4">
-                    <div class="row align-items-center">
-                        <div class="col-1 text-nowrap">
-                            <span class="fw-bold">科目情報</span>
-                        </div>
+                <form action="TestList.action" method="get" class="px-3 mb-4">
+                    <div class="row align-items-end">
+                        <div class="col-1 text-nowrap fw-bold mb-2">科目情報</div>
                         <div class="col-3">
-                            <label class="form-label" for="f1">入学年度</label>
-                            <select class="form-select" name="f1" id="f1">
+                            <label class="form-label" for="student-f1-select">入学年度</label>
+                            <select class="form-select" name="f1" id="student-f1-select">
                                 <option value="0">--------</option>
                                 <c:forEach var="year" items="${ent_year_set}">
                                     <option value="${year}" <c:if test="${year == f1}">selected</c:if>>${year}</option>
@@ -26,8 +24,8 @@
                             </select>
                         </div>
                         <div class="col-2">
-                            <label class="form-label" for="f2">クラス</label>
-                            <select class="form-select" name="f2" id="f2">
+                            <label class="form-label" for="student-f2-select">クラス</label>
+                            <select class="form-select" name="f2" id="student-f2-select">
                                 <option value="0">--------</option>
                                 <c:forEach var="num" items="${class_num_set}">
                                     <option value="${num}" <c:if test="${num == f2}">selected</c:if>>${num}</option>
@@ -35,51 +33,46 @@
                             </select>
                         </div>
                         <div class="col-4">
-                            <label class="form-label" for="f3">科目</label>
-                            <select class="form-select" name="f3" id="f3">
+                            <label class="form-label" for="subject-select">科目</label>
+                            <select class="form-select" name="f3" id="subject-select">
                                 <option value="0">--------</option>
                                 <c:forEach var="sub" items="${subjects}">
                                     <option value="${sub.cd}" <c:if test="${sub.cd == f3}">selected</c:if>>${sub.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="col-2 text-center">
-                            <button class="btn btn-secondary mt-4 w-100" id="filter-button">検索</button>
+                        <div class="col-2">
+                            <button class="btn btn-secondary w-100" id="filter-button">検索</button>
                         </div>
                     </div>
                 </form>
 
-                <%-- 横線で区切りを入れる --%>
-                <div class="col-12">
-                    <hr class="my-2 mx-0" style="border-top: 1px solid #ddd;">
-                </div>
+                <hr class="mx-3">
 
                 <%-- 【B：学生情報検索】 --%>
-                <form action="TestStudentList.action" method="get" class="col-12 mt-3">
-                    <div class="row align-items-center">
-                        <div class="col-1 text-nowrap">
-                            <span class="fw-bold">学生情報</span>
-                        </div>
+                <form action="TestList.action" method="get" class="px-3 mt-3">
+                    <div class="row align-items-end">
+                        <div class="col-1 text-nowrap fw-bold mb-2">学生情報</div>
                         <div class="col-9">
-                            <label class="form-label" for="f4">学生番号</label>
-                            <input type="text" class="form-control" name="f4" id="f4" 
+                            <label class="form-label" for="student-f4-input">学生番号</label>
+                            <input type="text" class="form-control" name="f4" id="student-f4-input" 
                                    value="${f4}" placeholder="学生番号を入力してください">
                         </div>
-                        <div class="col-2 text-center">
-                            <button class="btn btn-secondary mt-4 w-100" id="filter-button">検索</button>
+                        <div class="col-2">
+                            <button class="btn btn-secondary w-100" id="filter-button">検索</button>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <%-- 結果表示エリア --%>
-            <div class="mx-3 mt-4">
+            <%-- 2. 検索結果表示エリア (検索窓の外・下側に配置) --%>
+            <div class="mx-3 mt-4 px-2">
                 <c:choose>
                     <%-- ケース1：科目別（クラス単位）の成績表示 --%>
                     <c:when test="${not empty tests && not empty subject}">
-                        <div class="mb-2 fw-bold">科目：${subject.name}</div>
+                        <div class="mb-3 h5 fw-bold">科目：${subject.name}</div>
                         <table class="table table-hover">
-                            <thead class="table-light">
+                            <thead class="table-light border-top">
                                 <tr>
                                     <th>入学年度</th>
                                     <th>クラス</th>
@@ -106,14 +99,14 @@
 
                     <%-- ケース2：学生個人別の成績表示 --%>
                     <c:when test="${not empty tests && not empty student}">
-                        <div class="mb-2 fw-bold">氏名：${student.studentName}（${student.studentNo}）</div>
+                        <div class="mb-3 h5 fw-bold">氏名：${student.studentName}（${student.studentNo}）</div>
                         <table class="table table-hover">
-                            <thead class="table-light">
+                            <thead class="table-light border-top">
                                 <tr>
                                     <th>科目名</th>
                                     <th>科目コード</th>
-                                    <th>回数</th>
-                                    <th>点数</th>
+                                    <th class="text-center">回数</th>
+                                    <th class="text-center">点数</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,10 +122,17 @@
                         </table>
                     </c:when>
 
-                    <%-- 何も検索されていない状態 --%>
+                    <%-- 何も検索されていない、または結果がない状態 --%>
                     <c:otherwise>
-                        <div class="text-primary mt-3">
-                            科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+                        <div class="mt-4 text-center py-5 border rounded bg-light">
+                            <c:choose>
+                                <c:when test="${not empty f1 or not empty f4}">
+                                    <span class="text-danger">成績情報が存在しませんでした。</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="text-muted">科目情報を選択または学生情報を入力して検索ボタンをクリックしてください</span>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </c:otherwise>
                 </c:choose>

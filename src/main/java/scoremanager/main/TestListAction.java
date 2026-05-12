@@ -27,50 +27,49 @@ public class TestListAction extends Action {
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // 1. パラメータの取得（検索ボタンが押されたとき用）
+        // 1. パラメータの取得
         String f1 = req.getParameter("f1"); // 入学年度
         String f2 = req.getParameter("f2"); // クラス番号
         String f3 = req.getParameter("f3"); // 科目コード
         String f4 = req.getParameter("f4"); // 学生番号
 
-        // 2. 検索用のDAOを準備
+        // 2. 共通DAOの準備
         SubjectDao sDao = new SubjectDao();
         ClassNumDao cDao = new ClassNumDao();
         StudentDao stDao = new StudentDao();
 
-        // 3. 画面のプルダウン等の初期表示用データをセット
-        // 入学年度リスト（現在の年から10年前までなど）
+        // 3. 画面表示用データの作成（プルダウン等）
         List<Integer> entYearList = new ArrayList<>();
         int year = LocalDate.now().getYear();
-        for (int i = year - 10; i <= year; i++) {
+        for (int i = year - 10; i <= year; i++) { // 過去から現在の順
             entYearList.add(i);
         }
-        // クラス一覧、科目一覧を取得
         List<String> classList = cDao.filter(teacher.getSchool());
         List<Subject> subjects = sDao.filter(teacher.getSchool());
 
-        // 4. 検索処理
+        // 4. 検索処理の分岐
         if (f4 != null && !f4.isEmpty()) {
-            // 【学生番号検索】(画像 ⑬ の検索ボタン押下時)
+            // 【学生番号検索】(個人単位)
             TestListStudentDao tlsDao = new TestListStudentDao();
-            Student student = stDao.get(f4); // 学生情報を取得
+            Student student = stDao.get(f4);
             if (student != null) {
+                // DAO内で科目情報をJOINしたリストを取得
                 List<Test> tests = tlsDao.filter(student);
-                req.setAttribute("tests", tests); // 学生用成績リスト
+                req.setAttribute("tests", tests);     // 科目名、コード、回数、点数が入ったリスト
                 req.setAttribute("student", student); // 氏名表示用
             }
         } else if (f1 != null && f2 != null && f3 != null && !f3.equals("0")) {
-            // 【科目検索】(画像 ⑨ の検索ボタン押下時)
+            // 【科目検索】(クラス単位)
             TestListSubjectDao tljDao = new TestListSubjectDao();
             Subject subject = sDao.get(f3, teacher.getSchool());
-            // 先ほど作ったクラス別DAOを使って、1行まとめ形式で取得
+            // クラス別の成績リストを取得
             List<TestListSubject> tests = tljDao.filter(teacher.getSchool(), Integer.parseInt(f1), f2, subject);
             
-            req.setAttribute("tests", tests); // クラス別成績リスト
-            req.setAttribute("subject", subject); // 表示用
+            req.setAttribute("tests", tests);   // 1回目、2回目が横並びのリスト
+            req.setAttribute("subject", subject); // 科目名表示用
         }
 
-        // 5. レスポンス値をセット（JSPでの再表示用）
+        // 5. レスポンス値をセット（検索条件の保持とプルダウン用）
         req.setAttribute("f1", f1);
         req.setAttribute("f2", f2);
         req.setAttribute("f3", f3);
@@ -79,7 +78,7 @@ public class TestListAction extends Action {
         req.setAttribute("class_num_set", classList);
         req.setAttribute("subjects", subjects);
 
-        // 6. 成績参照JSPへフォワード
+        // 6. フォワード
         req.getRequestDispatcher("test_list.jsp").forward(req, res);
     }
 }
