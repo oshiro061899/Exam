@@ -75,7 +75,7 @@ public class TestStudentListAction extends Action {
             req.setAttribute("subject", subject);
         }
 
-        // 5. JSPへ渡す値をセット（検索条件の保持とプルダウン用）
+        // 5. JSPへ渡す値をセット
         req.setAttribute("f1", f1Str);
         req.setAttribute("f2", f2);
         req.setAttribute("f3", f3);
