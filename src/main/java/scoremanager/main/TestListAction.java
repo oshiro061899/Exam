@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package scoremanager.main;
 
 import java.time.LocalDate;
@@ -83,5 +83,4 @@ public class TestListAction extends Action {
         req.getRequestDispatcher("test_list.jsp").forward(req, res);
     }
 }
-=======
->>>>>>> branch 'master' of https://github.com/oshiro061899/Exam.git
+
