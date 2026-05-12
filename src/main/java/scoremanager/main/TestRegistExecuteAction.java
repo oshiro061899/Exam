@@ -71,11 +71,11 @@ public class TestRegistExecuteAction extends Action {
 			}
 
 			// 削除処理
-			if (isDelete) {
-				testDao.delete(test);
-				isDeletedAny = true;
-				continue;
-			}
+//			if (isDelete) {
+//				testDao.delete(test);
+//				isDeletedAny = true;
+//				continue;
+//			}
 
 			// 点数未入力なら保存処理をスキップ
 			if (points[i] == null || points[i].isEmpty()) {

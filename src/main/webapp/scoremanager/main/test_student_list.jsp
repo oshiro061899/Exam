@@ -1,3 +1,4 @@
+<%-- 成績参照学生別一覧 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <c:import url="/common/base.jsp">
@@ -50,19 +51,20 @@
                 <hr class="mx-3">
 
                 <%-- 【B：学生情報検索】 --%>
-                <form action="TestList.action" method="get" class="px-3 mt-3">
-                    <div class="row align-items-end">
-                        <div class="col-1 text-nowrap fw-bold mb-2">学生情報</div>
-                        <div class="col-9">
-                            <label class="form-label" for="student-f4-input">学生番号</label>
-                            <input type="text" class="form-control" name="f4" id="student-f4-input" 
-                                   value="${f4}" placeholder="学生番号を入力してください">
-                        </div>
-                        <div class="col-2">
-                            <button class="btn btn-secondary w-100" id="filter-button">検索</button>
-                        </div>
-                    </div>
-                </form>
+				<form action="TestStudentList.action" method="get" class="px-3 mt-3">
+				    <div class="row align-items-end">
+				        <div class="col-1 text-nowrap fw-bold mb-2">学生情報</div>
+				        <div class="col-9">
+				            <label class="form-label" for="student-f4-input">学生番号</label>
+				            <%-- name="f4" を使用（Action側と一致させる） --%>
+				            <input type="text" class="form-control" name="f4" id="student-f4-input" 
+				                   value="${f4}" placeholder="学生番号を入力してください">
+				        </div>
+				        <div class="col-2">
+				            <button class="btn btn-secondary w-100" id="filter-button">検索</button>
+				        </div>
+				    </div>
+				</form>
             </div>
 
             <%-- 2. 検索結果表示エリア (検索窓の外・下側に配置) --%>

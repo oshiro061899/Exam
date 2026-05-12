@@ -7,46 +7,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.Student;
+import bean.Subject;
 import bean.Test;
 
 public class TestListStudentDao extends Dao {
 
     /**
-     * 学生情報から成績リストを取得する
+     * 指定された学生の成績一覧を取得する
      */
-	// --- 修正箇所：filterメソッドの中 ---
+    public List<Test> filter(Student student) throws Exception {
+        List<Test> list = new ArrayList<>();
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
 
-	public List<Test> filter(Student student) throws Exception {
-	    List<Test> list = new ArrayList<>();
-	    Connection connection = getConnection();
-	    PreparedStatement statement = null;
-	    ResultSet rSet = null;
+        // SQL: 学生番号で検索し、科目名を表示するためにSubjectテーブルと結合
+        // カラム名は DB定義に合わせて no, point を使用
+        String sql = 
+            "select t.subject_cd, s.subject_name, t.no, t.point " +
+            "from test t " +
+            "join subject s on t.subject_cd = s.subject_cd and t.school_cd = s.school_cd " +
+            "where t.student_no = ? " +
+            "order by t.subject_cd asc, t.no asc";
 
-	    // ① SQL文の中の「no」を「test_no」に書き換える（2箇所）
-	    String sql = "SELECT t.subject_cd, s.subject_name, t.test_no, t.test_point " + 
-	             "FROM test t " +
-	             "JOIN subject s ON t.subject_cd = s.subject_cd AND t.school_cd = s.school_cd " +
-	             "WHERE t.student_no = ? " +
-	             "ORDER BY t.subject_cd ASC, t.test_no ASC";
-	    try {
-	        statement = connection.prepareStatement(sql);
-	        statement.setString(1, student.getStudentNo());
-	        rSet = statement.executeQuery();
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, student.getStudentNo());
+            ResultSet rSet = statement.executeQuery();
 
-	        while (rSet.next()) {
-	            Test test = new Test();
-	            // 省略（subject等のセット）
-	            
-	            test.setNo(rSet.getInt("test_no")); 
-	            test.setPoint(rSet.getInt("test_point"));
-	            
-	            list.add(test);
-	        }
-	    } catch (Exception e) {
-	        throw e;
-	    } finally {
-	        // クローズ処理
-	    }
-	    return list;
-	}
+            while (rSet.next()) {
+                Test test = new Test();
+                test.setStudent(student);
+
+                Subject sub = new Subject();
+                sub.setCd(rSet.getString("subject_cd"));
+                sub.setName(rSet.getString("subject_name"));
+                test.setSubject(sub);
+
+                test.setNo(rSet.getInt("no"));
+                test.setPoint(rSet.getInt("point"));
+
+                list.add(test);
+            }
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+
+        return list;
+    }
 }
