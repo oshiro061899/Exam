@@ -17,7 +17,13 @@
 				<h2 class="h3 mb-3 fw-norma bg-secondary bg-opacity-10 py-2 px-4">
 					成績管理
 				</h2>
-	
+				
+				<c:if test="${not empty search_error}">
+					<div class="text-warning small mb-1">
+						${search_error}
+					</div>
+				</c:if>
+
 				<%-- 検索フォーム --%>
 				<form action="TestRegist.action" method="get">
 					<div class="row border mx-3 mb-3 py-3 align-items-end rounded">
@@ -103,7 +109,7 @@
 									<td>${test.student.studentName}</td>
 									<td>
 										<%-- エラーメッセージ表示 --%>
-										<div class="text-danger small mb-1">
+										<div class="text-warning small mb-1">
 											${errors[test.student.studentNo]}
 										</div>
 
