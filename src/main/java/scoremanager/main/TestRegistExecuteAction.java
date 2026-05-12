@@ -1,12 +1,17 @@
 package scoremanager.main;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bean.Student;
 import bean.Subject;
 import bean.Teacher;
 import bean.Test;
+import dao.ClassNumDao;
+import dao.SubjectDao;
 import dao.TestDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,12 +21,12 @@ import tool.Action;
 public class TestRegistExecuteAction extends Action {
 
 	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res
-	) throws Exception {
+	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		// セッション
 		HttpSession session = req.getSession();
 		// ログインユーザー取得
 		Teacher teacher = (Teacher) session.getAttribute("user");
+		
 		// パラメータ取得
 		String[] studentNo = req.getParameterValues("student_no");
 		String[] points = req.getParameterValues("point");
@@ -40,21 +45,21 @@ public class TestRegistExecuteAction extends Action {
 		// 削除が1件でも行われたかを記録するフラグ
 		boolean isDeletedAny = false;
 
-		// 登録処理
+		// 登録・削除ループ処理
 		for (int i = 0; i < studentNo.length; i++) {
 			Test test = new Test();
 			
 			Student student = new Student();
-			student.setStudentNo(studentNo[i]); // 現在のループの学籍番号
+			student.setStudentNo(studentNo[i]);
 			Subject subject = new Subject();
-			subject.setCd(subjectCd); // 画面で選択された科目コード
+			subject.setCd(subjectCd);
 			test.setStudent(student);
 			test.setSubject(subject);
-			test.setSchool(teacher.getSchool()); // ログインユーザーの学校
-			test.setClassNum(classNum); // 画面で選択されたクラス
-			test.setNo(no); // 画面で選択された回数
+			test.setSchool(teacher.getSchool());
+			test.setClassNum(classNum);
+			test.setNo(no);
 
-			// 削除チェック
+			// 削除判定
 			boolean isDelete = false;
 			if (deletes != null) {
 				for (String del : deletes) {
@@ -72,12 +77,12 @@ public class TestRegistExecuteAction extends Action {
 				continue;
 			}
 
-			// 点数未入力ならスキップ
+			// 点数未入力なら保存処理をスキップ
 			if (points[i] == null || points[i].isEmpty()) {
 				continue;
 			}
 
-			// 点数チェックと保存処理
+			// 点数チェックと保存
 			try {
 				int point = Integer.parseInt(points[i]);
 				if (point < 0 || point > 100) {
@@ -91,6 +96,7 @@ public class TestRegistExecuteAction extends Action {
 			}
 		}
 
+		// JSPへ戻すパラメータのセット
 		req.setAttribute("f1", entYear);
 		req.setAttribute("f2", classNum);
 		req.setAttribute("f3", subjectCd);
@@ -100,19 +106,31 @@ public class TestRegistExecuteAction extends Action {
 		// 遷移判定
 		if (errors.isEmpty()) {
 			if (isDeletedAny) {
-				// 削除が行われていた場合は削除完了画面へ
 				req.getRequestDispatcher("test_delete_done.jsp").forward(req, res);
 			} else {
-			// 通常の登録完了画面
-			req.getRequestDispatcher("test_regist_done.jsp").forward(req, res);
+				req.getRequestDispatcher("test_regist_done.jsp").forward(req, res);
+			}
+		} else {
+			// エラー時の再セットアップ処理
+			// プルダウン用のリストを再作成
+			ClassNumDao classNumDao = new ClassNumDao();
+			SubjectDao subjectDao = new SubjectDao();
+			
+			List<Integer> entYearSet = new ArrayList<>();
+			int year = LocalDate.now().getYear();
+			for (int i = year - 10; i <= year; i++) {
+				entYearSet.add(i);
 			}
 
-		} else {
-			// エラーがある場合は再検索して入力画面に戻る
+			req.setAttribute("ent_year_set", entYearSet);
+			req.setAttribute("class_num_set", classNumDao.filter(teacher.getSchool()));
+			req.setAttribute("subject_set", subjectDao.filter(teacher.getSchool()));
+			
+			// 学生リストの再取得
 			req.setAttribute("tests", testDao.filter(
-		    	teacher.getSchool(), Integer.parseInt(entYear), classNum, subjectCd, no
+				teacher.getSchool(), Integer.parseInt(entYear), classNum, subjectCd, no
 			));
-			req.getRequestDispatcher("test_regist.jsp").forward(req, res);
+
 			req.getRequestDispatcher("test_regist.jsp").forward(req, res);
 		}
 	}
