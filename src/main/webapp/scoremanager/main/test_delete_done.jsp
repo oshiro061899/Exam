@@ -1,4 +1,4 @@
-<%-- 成績登録完了JSP --%>
+<%-- 成績削除完了JSP --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
@@ -9,9 +9,9 @@
 
 	<c:param name="content">
 		<div id="wrap_box">
-			<h2 class="h3 mb-3 fw-bold bg-secondary bg-opacity-10 py-2 px-4">成績情報登録</h2>
+			<h2 class="h3 mb-3 fw-norma bg-secondary bg-opacity-10 py-2 px-4">成績削除登録</h2>
 			<div id="wrap_box">
-				<p class="text-center" style="background-color:#8cc3a9">登録が完了しました</p>
+				<p class="text-center" style="background-color:#8cc3a9">削除が完了しました</p>
 
 				<br>
 				<br>
