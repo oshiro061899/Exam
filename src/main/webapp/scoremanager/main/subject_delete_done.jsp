@@ -14,12 +14,9 @@
 			<div id="wrap_box">
 				<%-- 完了メッセージ：登録・変更に合わせて緑系の背景 --%>
 				<p class="text-center py-2" style="background-color:#8cc3a9">削除が完了しました</p>
-
-				<div class="row mt-5">
-					<div class="col-12 px-4 text-center">
-						<a href="SubjectList.action" class="btn btn-secondary">科目一覧へ戻る</a>
-					</div>
-				</div>
+				<br>
+				<a href="SubjectList.action">科目一覧</a>
+			</div>
 			</div>
 		</section>
 	</c:param>
