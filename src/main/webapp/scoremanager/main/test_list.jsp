@@ -11,7 +11,7 @@
             <div class="row border mx-3 mb-3 py-3 align-items-center rounded" id="filter">
                 
                 <%-- 【A：科目情報検索】 --%>
-                <form action="TestSubjectList.action" method="get" class="col-12 mb-4">
+                <form action="TestListSubject.action" method="get" class="col-12 mb-4">
                     <div class="row align-items-center">
                         <div class="col-1 text-nowrap">
                             <span class="fw-bold">科目情報</span>
@@ -55,7 +55,7 @@
                 </div>
 
                 <%-- 【B：学生情報検索】 --%>
-                <form action="TestStudentList.action" method="get" class="col-12 mt-3">
+                <form action="TestListStudent.action" method="get" class="col-12 mt-3">
                     <div class="row align-items-center">
                         <div class="col-1 text-nowrap">
                             <span class="fw-bold">学生情報</span>
@@ -75,34 +75,38 @@
             <%-- 結果表示エリア --%>
             <div class="mx-3 mt-4">
                 <c:choose>
-                    <%-- ケース1：科目別（クラス単位）の成績表示 --%>
-                    <c:when test="${not empty tests && not empty subject}">
-                        <div class="mb-2 fw-bold">科目：${subject.name}</div>
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>入学年度</th>
-                                    <th>クラス</th>
-                                    <th>学生番号</th>
-                                    <th>氏名</th>
-                                    <th class="text-center">1回</th>
-                                    <th class="text-center">2回</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="t" items="${tests}">
-                                    <tr>
-                                        <td>${t.entYear}</td>
-                                        <td>${t.classNum}</td>
-                                        <td>${t.studentNo}</td>
-                                        <td>${t.studentName}</td>
-                                        <td class="text-center">${not empty t.getPoint(1) ? t.getPoint(1) : "-"}</td>
-                                        <td class="text-center">${not empty t.getPoint(2) ? t.getPoint(2) : "-"}</td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </c:when>
+
+					<%-- ケース1：科目別（クラス単位）の成績表示 --%>
+					<c:when test="${not empty scoreMap}">
+					    <div class="mb-2 fw-bold">科目：${subject.name}</div>
+					    <table class="table table-hover">
+					        <thead class="table-light">
+					            <tr>
+					                <th>入学年度</th>
+					                <th>クラス</th>
+					                <th>学生番号</th>
+					                <th>氏名</th>
+					                <th class="text-center">1回</th>
+					                <th class="text-center">2回</th>
+					            </tr>
+					        </thead>
+					        <tbody>
+					            <c:forEach var="entry" items="${scoreMap}">
+					                <c:set var="sNo" value="${entry.key}" />
+					                <c:set var="points" value="${entry.value}" />
+					                <c:set var="student" value="${studentMap[sNo]}" />
+					                <tr>
+					                    <td>${student.entYear}</td>
+					                    <td>${student.classNum}</td>
+					                    <td>${sNo}</td>
+					                    <td>${student.studentName}</td>
+					                    <td class="text-center">${points[0] != -1 ? points[0] : "-"}</td>
+					                    <td class="text-center">${points[1] != -1 ? points[1] : "-"}</td>
+					                </tr>
+					            </c:forEach>
+					        </tbody>
+					    </table>
+					</c:when>
 
                     <%-- ケース2：学生個人別の成績表示 --%>
                     <c:when test="${not empty tests && not empty student}">

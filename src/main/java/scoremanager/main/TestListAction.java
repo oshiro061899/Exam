@@ -8,7 +8,6 @@ import bean.Student;
 import bean.Subject;
 import bean.Teacher;
 import bean.Test;
-import bean.TestListSubject;
 import dao.ClassNumDao;
 import dao.StudentDao;
 import dao.SubjectDao;
@@ -57,16 +56,21 @@ public class TestListAction extends Action {
                 List<Test> tests = tlsDao.filter(student);
                 req.setAttribute("tests", tests);     // 科目名、コード、回数、点数が入ったリスト
                 req.setAttribute("student", student); // 氏名表示用
-            }
-        } else if (f1 != null && f2 != null && f3 != null && !f3.equals("0")) {
-            // 【科目検索】(クラス単位)
-            TestListSubjectDao tljDao = new TestListSubjectDao();
-            Subject subject = sDao.get(f3, teacher.getSchool());
-            // クラス別の成績リストを取得
-            List<TestListSubject> tests = tljDao.filter(teacher.getSchool(), Integer.parseInt(f1), f2, subject);
-            
-            req.setAttribute("tests", tests);   // 1回目、2回目が横並びのリスト
-            req.setAttribute("subject", subject); // 科目名表示用
+            } else if (f1 != null && f2 != null && f3 != null && !f3.equals("0") && !f3.isEmpty()) {
+	            // 【科目検索】(クラス単位)
+	            TestListSubjectDao tljDao = new TestListSubjectDao();
+	            Subject subject = sDao.get(f3, teacher.getSchool());
+	            
+	            if (subject != null) {
+	                // クラス別の成績リストを取得
+	                List<Test> tests = tljDao.filter(Integer.parseInt(f1), f2, subject);
+	                req.setAttribute("tests", tests);
+	                req.setAttribute("subject", subject);
+	            } else {
+	                // 科目が存在しない場合などのエラー処理（任意）
+	                req.setAttribute("error", "指定された科目が見つかりません。");
+	            }
+	        }
         }
 
         // 5. レスポンス値をセット（検索条件の保持とプルダウン用）
