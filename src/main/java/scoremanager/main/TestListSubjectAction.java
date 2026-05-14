@@ -42,50 +42,55 @@ public class TestListSubjectAction extends Action {
         String classNum = req.getParameter("f2");
         String subjectCd = req.getParameter("f3");
 
-        // 全てのパラメータが揃っている場合のみ検索を実行
-        if (entYearStr != null && classNum != null && subjectCd != null && 
-            !entYearStr.equals("0") && !classNum.equals("0") && !subjectCd.equals("0")) {
-            
-            int entYear = Integer.parseInt(entYearStr);
-            Subject subject = sDao.get(subjectCd, teacher.getSchool());
-
-            if (subject != null) {
-                TestListSubjectDao tDao = new TestListSubjectDao();
+        // 3. 検索処理
+        if (entYearStr != null || classNum != null || subjectCd != null) {
+            // いずれかが未選択の場合のチェック
+            if (entYearStr == null || entYearStr.isEmpty() || entYearStr.equals("0") || 
+                classNum == null || classNum.isEmpty() || classNum.equals("0") || 
+                subjectCd == null || subjectCd.isEmpty() || subjectCd.equals("0")) {
                 
-                // --- データ加工ロジック ---
+                req.setAttribute("filter_error", "入学年度とクラスと科目を選択してください");
+                req.getRequestDispatcher("test_list.jsp").forward(req, res);
                 
-                // 1. DAOで全件取得
-                List<Test> rawTests = tDao.filter(entYear, classNum, subject);
+            } else {
+                int entYear = Integer.parseInt(entYearStr);
+                Subject subject = sDao.get(subjectCd, teacher.getSchool());
 
-                // 2. 学生ごとに成績をまとめる（StudentNo -> [第1回の点数, 第2回の点数]）
-                Map<String, int[]> scoreMap = new LinkedHashMap<>(); 
-                Map<String, Student> studentMap = new LinkedHashMap<>();
+                if (subject != null) {
+                    TestListSubjectDao tDao = new TestListSubjectDao();
+                    List<Test> rawTests = tDao.filter(entYear, classNum, subject);
 
-                for (Test t : rawTests) {
-                    String sNo = t.getStudent().getStudentNo();
-                    if (!scoreMap.containsKey(sNo)) {
-                        scoreMap.put(sNo, new int[]{-1, -1}); // 初期値 -1 (未受験)
-                        studentMap.put(sNo, t.getStudent());
+                    // 結果が空の場合のエラーメッセージ
+                    if (rawTests == null || rawTests.isEmpty()) {
+                        req.setAttribute("search_error", "学生情報が存在しませんでした。");
+                    } else {
+                        // データがある場合はMapに加工
+                        Map<String, int[]> scoreMap = new LinkedHashMap<>(); 
+                        Map<String, Student> studentMap = new LinkedHashMap<>();
+
+                        for (Test t : rawTests) {
+                            String sNo = t.getStudent().getStudentNo();
+                            if (!scoreMap.containsKey(sNo)) {
+                                scoreMap.put(sNo, new int[]{-1, -1});
+                                studentMap.put(sNo, t.getStudent());
+                            }
+                            if (t.getNo() == 1) scoreMap.get(sNo)[0] = t.getPoint();
+                            if (t.getNo() == 2) scoreMap.get(sNo)[1] = t.getPoint();
+                        }
+
+                        req.setAttribute("scoreMap", scoreMap);
+                        req.setAttribute("studentMap", studentMap);
+                        req.setAttribute("subject", subject);
                     }
-                    
-                    // 第1回なら配列の0番目、第2回なら1番目に点数をセット
-                    if (t.getNo() == 1) scoreMap.get(sNo)[0] = t.getPoint();
-                    if (t.getNo() == 2) scoreMap.get(sNo)[1] = t.getPoint();
                 }
-
-                // 3. JSPへ渡す
-                req.setAttribute("scoreMap", scoreMap);
-                req.setAttribute("studentMap", studentMap);
-                req.setAttribute("subject", subject); // 表示用の科目名
             }
         }
 
-        // 入力値を保持
+        // 4. 入力値の保持と画面遷移
         req.setAttribute("f1", entYearStr);
         req.setAttribute("f2", classNum);
         req.setAttribute("f3", subjectCd);
-
-        // フォワード先を test_list.jsp に合わせる（以前提示されたファイル名）
-        req.getRequestDispatcher("test_list.jsp").forward(req, res);
+        
+        req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
     }
 }

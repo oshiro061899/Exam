@@ -56,6 +56,6 @@ public class TestListStudentAction extends Action {
         // 入力値を保持
         req.setAttribute("f4", studentNo);
 
-        req.getRequestDispatcher("test_student_list.jsp").forward(req, res);
+        req.getRequestDispatcher("test_list_student.jsp").forward(req, res);
     }
 }

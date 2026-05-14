@@ -17,11 +17,11 @@ public class TestListStudentDao extends Dao {
      */
     public List<Test> filter(Student student) throws Exception {
         List<Test> list = new ArrayList<>();
-        Connection connection = getConnection();
+        // フィールドの connection ではなく、メソッドローカルで定義する
+        Connection connection = getConnection(); 
         PreparedStatement statement = null;
 
-        // SQL: 学生番号で検索し、科目名を表示するためにSubjectテーブルと結合
-        // カラム名は DB定義に合わせて no, point を使用
+        // SQL: 学生番号で検索
         String sql = 
             "select t.subject_cd, s.subject_name, t.no, t.point " +
             "from test t " +
@@ -48,9 +48,17 @@ public class TestListStudentDao extends Dao {
 
                 list.add(test);
             }
+        } catch (Exception e) {
+            // エラー追跡のためにスロー
+            throw e;
         } finally {
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
+            // 確実にリソースを解放する
+            if (statement != null) {
+                try { statement.close(); } catch (Exception e) {}
+            }
+            if (connection != null) {
+                try { connection.close(); } catch (Exception e) {}
+            }
         }
 
         return list;
