@@ -120,7 +120,7 @@
 								<table class="table table-hover">
 									<thead>
 										<tr>
-											<th class="w-50">科目名</th>
+											<th class="w-40">科目名</th>
 											<th class="text-end">科目コード</th>
 											<th class="text-center">回数</th>
 											<th class="text-center">点数</th>
