@@ -6,7 +6,7 @@
 	
 	<c:param name="content">
 		<section class="me-4">
-			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績参照</h2>
+			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績一覧（学生）</h2>
 
 			<%-- 検索フィルターエリア --%>
 			<div class="row border mx-3 mb-3 py-3 align-items-center rounded" id="filter">
