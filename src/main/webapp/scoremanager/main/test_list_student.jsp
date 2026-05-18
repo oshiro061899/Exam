@@ -6,7 +6,7 @@
 	
 	<c:param name="content">
 		<section class="me-4">
-			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績一覧（学生）</h2>
+			<h2 class="h3 mb-3 fw-bold bg-secondary bg-opacity-10 py-2 px-4">成績一覧（学生）</h2>
 
 			<%-- 検索フィルターエリア --%>
 			<div class="row border mx-3 mb-3 py-3 align-items-center rounded" id="filter">
@@ -72,6 +72,14 @@
 							<button class="btn btn-secondary mt-4" id="filter-button">検索</button>
 						</div>
 					</div>
+					<c:if test="${not empty search_error}">
+						<div class="row mt-2">
+							<div class="col-2"></div>
+							<div class="col-10">
+								<small style="color: #f39800;">${search_error}</small>
+							</div>
+						</div>
+					</c:if>
 				</form>
 			</div>
 
@@ -146,7 +154,7 @@
 
 					<%-- 何も検索されていない初期状態 --%>
 					<c:otherwise>
-						<div class="mt-3 fw-bold" style="color: #009edb;">
+						<div class="mt-3" style="color: #009edb;">
 							科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
 						</div>
 					</c:otherwise>

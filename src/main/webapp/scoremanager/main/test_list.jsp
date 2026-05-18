@@ -6,7 +6,7 @@
 	
 	<c:param name="content">
 		<section class="me-4">
-			<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">成績参照</h2>
+			<h2 class="h3 mb-3 fw-bold bg-secondary bg-opacity-10 py-2 px-4">成績参照</h2>
 
 			<%-- 検索フィルターエリア --%>
 			<div class="row border mx-3 mb-3 py-3 align-items-center rounded" id="filter">
@@ -43,7 +43,7 @@
 							</select>
 						</div>
 						<div class="col-2 text-center">
-							<button class="btn btn-secondary mt-4" id="filter-button">検索</button>
+							<button class="btn btn-secondary mt-4" id="filter-button-subject">検索</button>
 						</div>
 					</div>
 					<c:if test="${not empty filter_error}">
@@ -54,7 +54,7 @@
 				            </div>
 				        </div>
 					</c:if>
-				</form>
+				</form> <%-- ★【重要】科目情報検索のフォームをここで確実に閉じる --%>
 
 				<%-- 横線 --%>
 				<div class="col-12"><hr class="my-2"></div>
@@ -66,13 +66,23 @@
 						<div class="col-8">
 							<label class="form-label" for="f4">学生番号</label>
 							<input type="text" class="form-control" name="f4" id="f4" 
-								   value="${f4}" placeholder="学生番号を入力してください">
+								   value="${f4}" placeholder="学生番号を入力してください" required>
 						</div>
 						<div class="col-2 text-center">
-							<button class="btn btn-secondary mt-4" id="filter-button">検索</button>
+							<button class="btn btn-secondary mt-4" id="filter-button-student">検索</button>
 						</div>
 					</div>
-				</form>
+					
+					<%-- 学生情報が存在しなかった場合のエラーメッセージ表示エリア --%>
+					<c:if test="${not empty search_error}">
+						<div class="row mt-2">
+							<div class="col-2"></div>
+							<div class="col-10">
+								<small style="color: #f39800;">${search_error}</small>
+							</div>
+						</div>
+					</c:if>
+				</form> <%-- ★【重要】学生情報検索のフォームを閉じる --%>
 			</div>
 
 			<%-- 結果表示エリア --%>
